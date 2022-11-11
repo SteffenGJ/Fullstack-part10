@@ -4,6 +4,8 @@ import theme from '../theme';
 import FormikTextInput from './FormikTextInput';
 import Text from './Text';
 import * as yup from "yup";
+import useSignIn from '../hooks/useSignIn';
+import { useEffect } from 'react';
 
 const initialValues = {
     username: '',
@@ -59,9 +61,22 @@ const SignInForm = ({onSubmit}) => {
 
 const SignIn = () => {
 
-    const onSubmit = () => {
-        console.log("SIGNED IN");
+    const [signIn, result] = useSignIn();
+
+    const onSubmit = async (values) => {
+        try {
+            signIn(values);
+        } catch(e) {
+            console.log(e)
+        }
     }
+
+
+    useEffect(() => {
+        if (result.data) {
+            console.log(result.data.authenticate.accessToken)
+        }
+    }, [result.data])
 
     return (
         <View style={styles.main}>

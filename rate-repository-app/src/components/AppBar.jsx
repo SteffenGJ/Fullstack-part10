@@ -2,6 +2,9 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import AppBarTab from "./AppBarTab";
 import Constants from 'expo-constants';
 import theme from '../theme';
+import useSignOut from '../hooks/useSignOut';
+import { useEffect, useState } from 'react';
+import useAuthStorage from '../hooks/useAuthStorage';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,11 +23,38 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
+  const [token, setToken] = useState(false)
+  const authStorage = useAuthStorage();
+  const {signOut} = useSignOut();
+
+  const onSubmit = async () => {
+    try {
+      signOut();
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  const getToken = async () => {
+    const token = await authStorage.getAccessToken();
+    console.log(token);
+    setToken(token)
+    return token
+  }
+
+  useEffect(() => {
+    getToken();
+  }, [])
+
   return (
   <View style={styles.container}>
     <ScrollView horizontal>
       <AppBarTab style={styles.tab} title="Repositories" to="/"/>
-      <AppBarTab style={styles.tab} title="Sign in" to="/signin"/>
+      {!token ? 
+        <AppBarTab style={styles.tab} title="Sign in" to="/signin"/>
+        :
+        <AppBarTab style={styles.tab} title="Sign out" handlePress={onSubmit}/>
+      }
     </ScrollView>
   </View>
   );
