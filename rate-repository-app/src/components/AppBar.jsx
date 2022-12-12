@@ -37,24 +37,26 @@ const AppBar = () => {
 
   const getToken = async () => {
     const token = await authStorage.getAccessToken();
-    console.log(token);
     setToken(token)
     return token
   }
 
   useEffect(() => {
-    getToken();
-  }, [])
+     getToken();
+   }, [])
 
   return (
   <View style={styles.container}>
     <ScrollView horizontal>
       <AppBarTab style={styles.tab} title="Repositories" to="/"/>
+      {token && <AppBarTab style={styles.tab} title="Create a Review" to="/createreview"/>}
+      {token && <AppBarTab style={styles.tab} title={"My Reviews"} to="/myreviews"/>}
       {!token ? 
         <AppBarTab style={styles.tab} title="Sign in" to="/signin"/>
         :
         <AppBarTab style={styles.tab} title="Sign out" handlePress={onSubmit}/>
       }
+      {!token && <AppBarTab style={styles.tab} title="Sign up" to="/signup"/>}
     </ScrollView>
   </View>
   );

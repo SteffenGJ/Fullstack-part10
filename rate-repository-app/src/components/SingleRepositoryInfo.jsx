@@ -1,7 +1,9 @@
 import { Text, View, Image, StyleSheet, Pressable } from "react-native";
+import * as Linking from 'expo-linking';
 import theme from "../theme";
 
-const RepositoryItem = ({props, handlePress}) => {
+const SingleRepositoryInfo = ({props}) => {
+    console.log(props);
 
     const styles = StyleSheet.create({
         component: {
@@ -61,11 +63,28 @@ const RepositoryItem = ({props, handlePress}) => {
             fontSize: theme.fontSizes.body,
             marginTop: 10,
             marginBottom: 10
+        },
+        gitButton: {
+            backgroundColor: theme.colors.tag,
+            color: "white",
+            fontWeight: theme.fontWeights.bold,
+            paddingTop: 10,
+            paddingBottom: 10,
+            textAlign: "center",
+            borderRadius: 5,
+            marginTop: 10
         }
     })
 
+    const onPress = async () => {
+        try {
+            Linking.openURL(props.url) 
+        } catch(e) {
+            console.log(e);
+        }
+    }
+
     return (
-        <Pressable onPress={() => handlePress(props.id)}>
         <View style={styles.component}>
             <View style={styles.upper}>
                 <Image style={styles.image} source={{uri: props.ownerAvatarUrl}}/>
@@ -95,9 +114,13 @@ const RepositoryItem = ({props, handlePress}) => {
                     <Text style={styles.lowerSubTextBottom}>Rating</Text>
                 </View>
             </View>
+            <View>
+                <Pressable onPress={onPress}>
+                    <Text style={styles.gitButton}>Open in GitHub</Text>
+                </Pressable>
+            </View>
         </View>
-        </Pressable>
     );
 }
 
-export default RepositoryItem;
+export default SingleRepositoryInfo;
